@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const fileUpload = require('express-fileupload')
+const fileUpload = require('express-fileupload');
+const methodOverride = require('method-override');
 const path = require('path')
 const ejs = require('ejs');
 const fs = require('fs');
@@ -22,6 +23,7 @@ app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true })) // url'deki datayı okuyor
 app.use(express.json()) // url'deki datayı json'a çeviriyor
 app.use(fileUpload())
+app.use(methodOverride('_method'))
 
 //routes
 app.get('/', async (req, res) => {
@@ -68,6 +70,19 @@ app.post('/photos', async (req, res) => {
     })
 });
 
+app.get('/photos/edit/:id', async (req, res) => {
+    const photo = await Photo.findOne({ _id: req.params.id })
+    res.render('edit', {
+        photo
+    });
+});
+app.put('/photos/:id', async (req, res) => {
+    const photo = await Photo.findOne({ _id: req.params.id });
+    photo.title = req.body.title;
+    photo.description = req.body.description;
+    photo.save();
+    res.redirect(`/photos/${req.params.id}`)
+});
 
 const port = 1000;
 app.listen(port, () => {
