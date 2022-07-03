@@ -12,7 +12,6 @@ mongoose.connect('mongodb://localhost/pcat-test-db', {
     useUnifiedTopology: true
 })
 
-
 //templae engine
 app.set("view engine", "ejs")
 
@@ -33,6 +32,14 @@ app.get('/', async (req, res) => {
 //routes
 app.get('/about', (req, res) => {
     res.render('about')
+})
+// id parametre
+app.get('/photos/:id', async (req, res) => {
+    // console.log(req.params.id)
+    const photo = await Photo.findById(req.params.id);
+    res.render('photo', {
+        photo
+    })
 })
 //routes
 app.get('/add', (req, res) => {
