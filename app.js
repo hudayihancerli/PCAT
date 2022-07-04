@@ -12,7 +12,8 @@ const app = express();
 //connect Db
 mongoose.connect('mongodb://localhost/pcat-test-db', {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    // useFindAndModify: false,
 })
 
 //templae engine
@@ -23,7 +24,9 @@ app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true })) // url'deki datayı okuyor
 app.use(express.json()) // url'deki datayı json'a çeviriyor
 app.use(fileUpload())
-app.use(methodOverride('_method'))
+app.use(methodOverride('_method', {
+    methods: ['POST', 'GET']
+}))
 
 //routes
 app.get('/', async (req, res) => {
@@ -83,6 +86,14 @@ app.put('/photos/:id', async (req, res) => {
     photo.save();
     res.redirect(`/photos/${req.params.id}`)
 });
+
+app.delete('/photos/:id', async (req, res) => {
+    const photo = await Photo.findOne({ _id: req.params.id });
+    let deletedImage = __dirname + '/public' + photo.image;
+    fs.unlinkSync(deletedImage);
+    await Photo.findByIdAndRemove(req.params.id)
+    res.redirect('/')
+})
 
 const port = 1000;
 app.listen(port, () => {
