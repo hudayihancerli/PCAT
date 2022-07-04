@@ -9,10 +9,13 @@ const pageController = require('./controllers/pageController');
 const app = express();
 
 //connect Db
-mongoose.connect('mongodb://localhost/pcat-test-db', {
+mongoose.connect('mongodb+srv://hudayihancerli:Mahmyut.2746@cluster0.p4lqjyx.mongodb.net/pcat-app?retryWrites=true&w=majority', {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
-    // useFindAndModify: false,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('DB connected.');
+}).catch((err) => {
+    console.log(err);
 })
 
 //templae engine
@@ -40,7 +43,7 @@ app.get('/photos/edit/:id', pageController.getEditPage);
 
 
 
-const port = 1000;
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
     console.log(`Sunucu ${port} portunda çalıştırıldı.`)
 })
