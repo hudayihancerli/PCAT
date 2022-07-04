@@ -1,4 +1,4 @@
-"# PCAT" 
+# PCAT
 
-"### Proje Linki:"
+### Proje Linki:
 https://pcat-app2.herokuapp.com/
